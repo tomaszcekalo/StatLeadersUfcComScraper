@@ -9,11 +9,22 @@ namespace StatLeadersUfcComScraper
 {
     public interface IStatLeadersScraper
     {
+        Career ScrapeCareer(
+            int? fighterStatus = null,
+            string weightClass = null,
+            string country = null);
+
+        Fight ScrapeFight(
+            string weightClass = null,
+            string country = null);
+
+        FightComb ScrapeFightComb(
+            string weightClass = null);
     }
 
     public class StatLeadersScraper : IStatLeadersScraper
     {
-        private ScrapingBrowser _browser;
+        private readonly ScrapingBrowser _browser;
 
         public StatLeadersScraper()
         {
@@ -186,6 +197,210 @@ namespace StatLeadersUfcComScraper
                     ?.InnerText,
                 Fighter = node.CssSelect("span a")
                     .Select(x => new Fighter() { Href = x.Attributes["href"].Value, Name = x.InnerText })
+                    .FirstOrDefault()
+            };
+            return result;
+        }
+
+        public Fight ScrapeFight(
+            string weightClass = null,
+            string country = null)
+        {
+            string url = Pages.StatLeadersFight;
+            var uriBuilder = new UriBuilder(url);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            if (weightClass != null)
+                query["weight_class"] = weightClass;
+            if (country != null)
+                query["country"] = country;
+
+            uriBuilder.Query = query.ToString();
+            var uri = uriBuilder.Uri;
+
+            WebPage homePage = _browser.NavigateToPage(uri);
+
+            return ParseFight(homePage.Html);
+        }
+
+        public Fight ParseFight(HtmlNode node)
+        {
+            var result = new Fight()
+            {
+                FastestFinish = node.CssSelect("#FastestFinish-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                SigStrikesAttempted = node.CssSelect("#SigStrikesAttempted-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                FastestKOTKO = node.CssSelect("#FastestKOTKO-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                FastestSubmission = node.CssSelect("#FastestSubmission-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                Knockdowns = node.CssSelect("#Knockdowns-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                LargestComebackFinish = node.CssSelect("#LargestComebackFinish-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                LatestFinish = node.CssSelect("#LatestFinish-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                LatestKOTKO = node.CssSelect("#LatestKOTKO-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                LatestSubmission = node.CssSelect("#LatestSubmission-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                LegKicksLanded = node.CssSelect("#LegKicksLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                SigBodyStrikesLanded = node.CssSelect("#SigBodyStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                SigClinchStrikesLanded = node.CssSelect("#SigClinchStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                SigDistanceStrikesLanded = node.CssSelect("#SigDistanceStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                SigGroundStrikesLanded = node.CssSelect("#SigGroundStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                SigHeadStrikesLanded = node.CssSelect("#SigHeadStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                SigStrikesAccuracy = node.CssSelect("#SigStrikesAccuracy-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                SigStrikesLanded = node.CssSelect("#SigStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                SignificantStrikesDifferential = node.CssSelect("#SignificantStrikesDifferential-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                SubmissionsAttempted = node.CssSelect("#SubmissionsAttempted-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TakedownsAccuracy = node.CssSelect("#TakedownsAccuracy-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TakedownsAttempted = node.CssSelect("#TakedownsAttempted-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TakedownsLanded = node.CssSelect("#TakedownsLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TotalBodyStrikesLanded = node.CssSelect("#TotalBodyStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TotalClinchStrikesLanded = node.CssSelect("#TotalClinchStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TotalGroundStrikesLanded = node.CssSelect("#TotalGroundStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TotalHeadStrikesLanded = node.CssSelect("#TotalHeadStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TotalLegStrikesLanded = node.CssSelect("#TotalLegStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TotalStrikesAttempted = node.CssSelect("#TotalStrikesAttempted-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TotalStrikesLanded = node.CssSelect("#TotalStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+            };
+
+            return result;
+        }
+
+        public FightItem ParseFightItem(HtmlNode node)
+        {
+            var result = new FightItem()
+            {
+                Header = node.CssSelect("header h3")
+                    .FirstOrDefault()
+                    ?.InnerText,
+                SubHeader = node.CssSelect("header p")
+                    .FirstOrDefault()
+                    ?.InnerText
+                    .Trim(),
+                Rows = node.CssSelect(".results-table--tr")
+                    .Select(ParseFightRow)
+            };
+            return result;
+        }
+
+        public FightRow ParseFightRow(HtmlNode node)
+        {
+            var spans = node.CssSelect("span")
+                .ToList();
+            var result = new FightRow
+            {
+                Fighters = node.CssSelect("span a")
+                    .Select(x => new Fighter()
+                    {
+                        Href = x.Attributes["href"].Value,
+                        Name = x.InnerText
+                    })
+                    .ToArray(),
+                DateEvent = spans
+                    .LastOrDefault()
+                    ?.InnerText,
+                Rank = spans
+                    .FirstOrDefault()
+                    ?.InnerText,
+                Total = spans[3]
+                    .InnerText,
+            };
+            return result;
+        }
+
+        public FightComb ScrapeFightComb(
+            string weightClass = null)
+        {
+            string url = Pages.StatLeadersFightComb;
+            var uriBuilder = new UriBuilder(url);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            if (weightClass != null)
+                query["weight_class"] = weightClass;
+
+            uriBuilder.Query = query.ToString();
+            var uri = uriBuilder.Uri;
+
+            WebPage homePage = _browser.NavigateToPage(uri);
+
+            return ParseFightComb(homePage.Html);
+        }
+
+        public FightComb ParseFightComb(HtmlNode node)
+        {
+            var result = new FightComb()
+            {
+                SigStrikesAttempted = node.CssSelect("#SigStrikesAttempted-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TakedownsAttempted = node.CssSelect("#TakedownsAttempted-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TakedownsLanded = node.CssSelect("#TakedownsLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TotalStrikesAttempted = node.CssSelect("#TotalStrikesAttempted-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                TotalStrikesLanded = node.CssSelect("#TotalStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                SigStrikesLanded = node.CssSelect("#SigStrikesLanded-group")
+                    .Select(ParseFightItem)
+                    .FirstOrDefault(),
+                SubmissionsAttempted = node.CssSelect("#SubmissionsAttempted-group")
+                    .Select(ParseFightItem)
                     .FirstOrDefault()
             };
             return result;
