@@ -7,7 +7,12 @@ namespace StatLeadersUfcComScraper.ConsoleExample
     {
         private static void Main(string[] args)
         {
-            var scraper = new StatLeadersScraper();
+            IStatLeadersScraper scraper = new StatLeadersScraper();
+            var roundComb = scraper.ScrapeRoundComb();
+            Console.WriteLine(JsonConvert.SerializeObject(roundComb, Formatting.Indented));
+            var round = scraper.ScrapeRound();
+            Console.WriteLine(JsonConvert.SerializeObject(round, Formatting.Indented));
+
             var fightComb = scraper.ScrapeFightComb();
             Console.WriteLine(JsonConvert.SerializeObject(fightComb, Formatting.Indented));
             var fight = scraper.ScrapeFight();

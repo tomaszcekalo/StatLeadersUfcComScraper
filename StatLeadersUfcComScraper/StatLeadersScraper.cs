@@ -20,6 +20,13 @@ namespace StatLeadersUfcComScraper
 
         FightComb ScrapeFightComb(
             string weightClass = null);
+
+        Round ScrapeRound(
+            string weightClass = null,
+            string country = null);
+
+        Round ScrapeRoundComb(
+            string weightClass = null);
     }
 
     public class StatLeadersScraper : IStatLeadersScraper
@@ -402,6 +409,121 @@ namespace StatLeadersUfcComScraper
                 SubmissionsAttempted = node.CssSelect("#SubmissionsAttempted-group")
                     .Select(ParseFightItem)
                     .FirstOrDefault()
+            };
+            return result;
+        }
+
+        public Round ScrapeRound(
+            string weightClass = null,
+            string country = null)
+        {
+            string url = Pages.StatLeadersRound;
+            var uriBuilder = new UriBuilder(url);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            if (weightClass != null)
+                query["weight_class"] = weightClass;
+            if (country != null)
+                query["country"] = country;
+
+            uriBuilder.Query = query.ToString();
+            var uri = uriBuilder.Uri;
+
+            WebPage homePage = _browser.NavigateToPage(uri);
+
+            return ParseRound(homePage.Html);
+        }
+
+        public Round ScrapeRoundComb(
+            string weightClass = null)
+        {
+            string url = Pages.StatLeadersRoundComb;
+            var uriBuilder = new UriBuilder(url);
+            var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+            if (weightClass != null)
+                query["weight_class"] = weightClass;
+
+            uriBuilder.Query = query.ToString();
+            var uri = uriBuilder.Uri;
+
+            WebPage homePage = _browser.NavigateToPage(uri);
+
+            return ParseRound(homePage.Html);
+        }
+
+        public Round ParseRound(HtmlNode node)
+        {
+            var result = new Round()
+            {
+                SigStrikesAttempted = node.CssSelect("#SigStrikesAttempted-group")
+                    .Select(ParseRoundItem)
+                    .FirstOrDefault(),
+                TakedownsAttempted = node.CssSelect("#TakedownsAttempted-group")
+                    .Select(ParseRoundItem)
+                    .FirstOrDefault(),
+                TakedownsLanded = node.CssSelect("#TakedownsLanded-group")
+                    .Select(ParseRoundItem)
+                    .FirstOrDefault(),
+                TotalStrikesAttempted = node.CssSelect("#TotalStrikesAttempted-group")
+                    .Select(ParseRoundItem)
+                    .FirstOrDefault(),
+                TotalStrikesLanded = node.CssSelect("#TotalStrikesLanded-group")
+                    .Select(ParseRoundItem)
+                    .FirstOrDefault(),
+                SigStrikesLanded = node.CssSelect("#SigStrikesLanded-group")
+                    .Select(ParseRoundItem)
+                    .FirstOrDefault(),
+                SubmissionsAttempted = node.CssSelect("#SubmissionsAttempted-group")
+                    .Select(ParseRoundItem)
+                    .FirstOrDefault()
+            };
+
+            return result;
+        }
+
+        public RoundItem ParseRoundItem(HtmlNode node)
+        {
+            var result = new RoundItem()
+            {
+                Header = node.CssSelect("header h3")
+                    .FirstOrDefault()
+                    ?.InnerText,
+                SubHeader = node.CssSelect("header p")
+                    .FirstOrDefault()
+                    ?.InnerText
+                    .Trim(),
+                Rows = node.CssSelect(".results-table--tr")
+                    .Select(ParseRoundRow)
+                    .Where(x => x.Fighters.Any())
+            };
+            return result;
+        }
+
+        public RoundRow ParseRoundRow(HtmlNode node)
+        {
+            var spans = node.CssSelect("span")
+                .Select(x => x.InnerText)
+                .ToList();
+            var round = spans.FirstOrDefault(x =>
+                x.Contains("Round "));
+
+            var result = new RoundRow()
+            {
+                Fighters = node.CssSelect("span a")
+                    .Select(x => new Fighter()
+                    {
+                        Href = x.Attributes["href"].Value,
+                        Name = x.InnerText
+                    })
+                    .ToArray(),
+                DateEvent = spans
+                    .LastOrDefault(),
+                Rank = spans
+                    .FirstOrDefault(),
+                Total = round != null
+                    ? spans[3]
+                    : spans[4],
+                Round = round
+                    ?? spans[3],
             };
             return result;
         }

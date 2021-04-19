@@ -5,7 +5,7 @@ namespace StatLeadersUfcComScraper
     public class RoundItem
     {
         public string Header { get; set; }
-        public string Subheader { get; set; }
+        public string SubHeader { get; set; }
         public IEnumerable<RoundRow> Rows { get; set; }
     }
 }
