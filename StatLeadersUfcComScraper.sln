@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31019.35
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLeadersUfcComScraper", "StatLeadersUfcComScraper\StatLeadersUfcComScraper.csproj", "{E271D203-996B-49FC-8059-EB7004946FF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StatLeadersUfcComScraper", "StatLeadersUfcComScraper\StatLeadersUfcComScraper.csproj", "{E271D203-996B-49FC-8059-EB7004946FF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLeadersUfcComScraper.ConsoleExample", "StatLeadersUfcComScraper.ConsoleExample\StatLeadersUfcComScraper.ConsoleExample.csproj", "{89914EE2-189A-4851-AC78-B73324A1AF8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StatLeadersUfcComScraper.ConsoleExample", "StatLeadersUfcComScraper.ConsoleExample\StatLeadersUfcComScraper.ConsoleExample.csproj", "{89914EE2-189A-4851-AC78-B73324A1AF8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatLeadersUfcComScraper.Tests", "StatLeadersUfcComScraper.Tests\StatLeadersUfcComScraper.Tests.csproj", "{67BA56B2-27C3-4BC8-82E4-D77003EBD07A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{89914EE2-189A-4851-AC78-B73324A1AF8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89914EE2-189A-4851-AC78-B73324A1AF8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89914EE2-189A-4851-AC78-B73324A1AF8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67BA56B2-27C3-4BC8-82E4-D77003EBD07A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67BA56B2-27C3-4BC8-82E4-D77003EBD07A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67BA56B2-27C3-4BC8-82E4-D77003EBD07A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67BA56B2-27C3-4BC8-82E4-D77003EBD07A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
